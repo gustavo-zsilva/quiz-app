@@ -8,6 +8,28 @@ body {
 
 }
 
+.question {
+    font-size: 30px;
+    margin-top: 10px;
+}
+
+body.correct {
+    background-color: rgb(5, 90, 5);
+
+}
+
+body.wrong {
+    background-color: rgb(168, 11, 11);
+}
+
+section#start-section button {
+    padding: 30px;
+    width: 70%;
+    margin: 20px 0 20px;
+    background-color: rgb(15, 153, 15);
+    cursor: pointer;
+}
+
 .content {
     background-color: white;
     width: 500px;
@@ -22,14 +44,17 @@ body {
     text-shadow: 3px 3px 3px rgba(0, 0, 0, 0.123);
 }
 
-.content ul {
+.content .options {
     list-style-type: none;
     padding: 0;
     margin: 20px 0;
-    column-count: 2;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-items: center;
+    gap: 10px;
 }
 
-.content ul button {
+.content button {
     width: 70%;
     cursor: pointer;
     /* padding: 30px; */
@@ -49,6 +74,14 @@ body {
     text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.212);
 }
 
+button.correct {
+    background-color: rgb(5, 90, 5);
+}
+
+button.wrong {
+    background-color: rgb(168, 11, 11);
+}
+
 .content .next {
     color: black;
     font-weight: 500;
@@ -66,7 +99,7 @@ body {
     display: none;
 }
 
-.content ul button.start-btn {
+.content button.start-btn {
     margin-left: 50%;
     width: 100%;
 }

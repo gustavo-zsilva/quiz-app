@@ -1,123 +1,119 @@
-const ul = document.querySelector('.options ul') // Pegar a lista onde os botões vão ser inseridos 
-var nextBtn = document.querySelector('.next')
-var correctAnswer = 2;
-var wins = 0, loses = 0;
+const startBtn = document.querySelector('#start-section button')
+const nextButton = document.querySelector('.next')
+const questionHeader = document.querySelector('.question')
+const optionsContainer = document.querySelector('.options')
 
-function load() {
-    console.log('Body loaded');
+let shuffledQuestions, currentQuestionIndex; // Iniciou as variáveis 
+
+startBtn.addEventListener('click', startGame)
+nextButton.addEventListener('click', () => {
+    currentQuestionIndex++
+    setNextQuestion()
+})
+
+// CARREGA TODOS ELEMENTOS INICIAIS EM TELA
+function startGame() {
+    console.log('Jogo começou');
+
+    startBtn.classList.add('hide')
+    shuffledQuestions = questions.sort(() => Math.random() - .5) // Seleciona uma resposta certa
+    currentQuestionIndex = 0;
     
-    const button = document.createElement('button')
-    button.classList.add('start-btn')
-    button.innerHTML = 'Start Quiz'
-    ul.appendChild(button)
-    
-    button.addEventListener('click', () => {
-        button.style.display = 'none'
-        return start()
+    questionHeader.classList.remove('hide')
+    optionsContainer.classList.remove('hide')
+    setNextQuestion()
+}
+
+function setNextQuestion() {
+    resetState()
+    showQuestion(shuffledQuestions[currentQuestionIndex])
+}
+
+function showQuestion(question) {
+    questionHeader.innerText = question.question
+    question.answers.forEach(answer => {
+        const button = document.createElement('button')
+        button.innerText = answer.text
+        button.classList.add('btn')
+        if (answer.correct) {
+            button.dataset.correct = answer.correct
+        }
+        button.addEventListener('click', selectAnswer)
+        optionsContainer.appendChild(button)
     })
 }
 
-function start() {
-    console.log('Quiz Started');
-
-    loadItems()
-
-    // FUNÇÃO RESPONSÁVEL POR CARREGAR OS ELEMENTOS NECESSÁRIOS
-    function loadItems() {
-        const question = document.querySelector('.question h1') // Questão
-        const numberOfButtons = 4; // Define quantos botões selecionáveis existem em tela
-        var fillNumbers = numberOfButtons === 2 ? fill(2) : fill(4); // Preenche os botões
-
+function resetState() {
+    clearStatusClass(document.body)
+    nextButton.classList.add('hide')
+    while (optionsContainer.firstChild) {
+        optionsContainer.removeChild(optionsContainer.firstChild)
     }
+}
 
-    // FUNÇÃO RESPONSÁVEL POR PREENCHER O CONTENT
-    function fill(n) {
-        const buttons = [] // Array onde ficam armazenados todos botões
-        var li;
-
-        for(var i = 1; i <= n; i++) {
-            buttons[i] = document.createElement('button')
-            li = document.createElement('li')
-            li.appendChild(buttons[i])
-            ul.appendChild(li)
-        }
-        
-        return getClickedButton(buttons)
-
-    }
-
-    // FUNÇÃO RESPONSÁVEL POR PEGAR O INDEX DO BOTÃO CLICADO
-    function getClickedButton(buttons) {
-        
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                checkAnswer(buttons, button)
-            })
-        });
-
-    }
-
-    // FUNÇÃO RESPONSÁVEL POR CHECAR A RESPOSTA CERTA
-    function checkAnswer(buttons, button) {
-        var checkedByUser = buttons.indexOf(button)
-        // console.log(answer)
-        // var answer = checkedByUser == correctAnswer ? buttons[checkedByUser].style.backgroundColor = 'green' : buttons[checkedByUser].style.backgroundColor = 'red';
-        if (checkedByUser == correctAnswer) {
-            buttons[checkedByUser].style.backgroundColor = 'green'
-            showAnswers(buttons, checkedByUser, true)
-
-        } else {
-            buttons[checkedByUser].style.backgroundColor = 'red'
-            showAnswers(buttons, checkedByUser, false)
-        }
-    }
-
-    // FUNÇÃO RESPONSÁVEL POR MOSTRAR AS RESPOSTAS CERTAS
-    function showAnswers(buttons, checkedByUser, res) {
-        
-        if(res) {
-
-            // Muda a cor de todos botões
-            for(var i = 1; i <= buttons.length -1; i++) {
-                buttons[i].style.backgroundColor = 'red'   
-            }
-            buttons[correctAnswer].style.backgroundColor = 'green'
-            buttons[checkedByUser].style.border = '4px solid rgb(3, 70, 3)'
-            wins += 1;
-
-        } else {
-
-            // Muda a cor de todos botões
-            for(var i = 1; i <= buttons.length -1; i++) {
-                buttons[i].style.backgroundColor = 'red'
-            }
-            buttons[correctAnswer].style.backgroundColor = 'green'
-            buttons[checkedByUser].style.border = '4px solid rgb(100, 4, 4)'
-            loses += 1;
-        }
-
-        nextBtn.classList.remove('hide')
-        nextBtn.addEventListener('click', () => {
-            nextQuestion(buttons)
-        })
-
+function selectAnswer(e) {
+    const selectedButton = e.target
+    const correct = selectedButton.dataset.correct
+    setStatusClass(document.body, correct)
+    Array.from(optionsContainer.children).forEach(button => {
+        setStatusClass(button, button.dataset.correct)
+    })
+    if (shuffledQuestions.length > currentQuestionIndex + 1) {
+        nextButton.classList.remove('hide')
+    } else {
+        startBtn.innerHTML = 'Restart'
+        startBtn.classList.remove('hide')
     }
     
 }
 
-// RESPONSÁVEL POR LIMPAR OS ELEMENTOS DA TELA E CARREGAR OS DA PRÓXIMA ETAPA
-function nextQuestion(buttons) {
-    console.log('Next question -->');
-
-    // buttons.forEach(button => {
-    //     button.style.display = 'none'
-    // })
-    // while(buttons.length > 0) {
-    //     buttons.shift()
-    // }
-    buttons.length = 0
-    console.log(buttons);
-    
-    nextBtn.classList.add('hide')
-    start()
+function setStatusClass(element, correct) {
+    clearStatusClass(element)
+    if (correct) {
+        element.classList.add('correct')
+    } else {
+        element.classList.add('wrong')
+    }
 }
+
+function clearStatusClass(element) {
+    element.classList.remove('correct')
+    element.classList.remove('wrong')
+}
+
+const questions = [
+    {
+        question: 'What is 2 + 2?',
+        answers: [
+            { text: '4', correct: true },
+            { text: '22', correct: false }
+        ],
+    },
+    {
+        question: 'Web Development cool?',
+        answers: [
+            { text: 'yes', correct: false },
+            { text: 'no', correct: false },
+            { text: '+-', correct: false },
+            { text: 'very', correct: true }
+        ]
+    },
+    {
+        question: 'Best game',
+        answers: [
+            { text: 'Fortnite', correct: false },
+            { text: 'Minecraft', correct: true },
+            { text: 'PUBG', correct: false },
+            { text: 'Fifa', correct: false }
+        ]
+    },
+    {
+        question: 'Best Youtuber',
+        answers: [
+            { text: 'MrBeast', correct: false },
+            { text: 'Dream', correct: false },
+            { text: 'DudePerfect', correct: false },
+            { text: 'Markiplier', correct: true }
+        ]
+    }
+]
