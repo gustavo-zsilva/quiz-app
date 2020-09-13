@@ -90,12 +90,12 @@ const questions = [
         ],
     },
     {
-        question: 'Web Development cool?',
+        question: 'Is Web Development cool?',
         answers: [
-            { text: 'yes', correct: false },
-            { text: 'no', correct: false },
+            { text: 'Yes', correct: false },
+            { text: 'Nope', correct: false },
             { text: '+-', correct: false },
-            { text: 'very', correct: true }
+            { text: 'Very much', correct: true }
         ]
     },
     {
@@ -110,9 +110,9 @@ const questions = [
     {
         question: 'Best Youtuber',
         answers: [
-            { text: 'MrBeast', correct: false },
-            { text: 'Dream', correct: false },
-            { text: 'DudePerfect', correct: false },
+            { text: 'MrBeast', correct: true },
+            { text: 'Dream', correct: true },
+            { text: 'DudePerfect', correct: true },
             { text: 'Markiplier', correct: true }
         ]
     }
